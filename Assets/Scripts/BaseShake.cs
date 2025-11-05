@@ -8,12 +8,16 @@ public abstract class BaseShake : MonoBehaviour
     [SerializeField] protected float frequency = 0.2f;
 
     protected Transform cameraTransform;
+    protected Quaternion cameraRotation;
     protected Vector3 originalPosition;
+    protected Quaternion originalRotation;
     protected float elapsedTime = 0f;
 
     protected virtual void Awake()
     {
         cameraTransform = GetComponent<Camera>().transform;
+        cameraRotation = Quaternion.identity;
+        originalRotation = cameraRotation;
         originalPosition = cameraTransform.localPosition;
     }
 
@@ -32,11 +36,13 @@ public abstract class BaseShake : MonoBehaviour
 
             Vector3 shakeOffset = CalculateShakeOffset(elapsedTime);
 
-            cameraTransform.localPosition = originalPosition + shakeOffset;
+            //cameraTransform.localPosition = originalPosition + shakeOffset;
+            cameraRotation = Quaternion.Euler(shakeOffset);
 
             yield return null;
         }
-        cameraTransform.localPosition = originalPosition;
+        //cameraTransform.localPosition = originalPosition;
+        cameraRotation = Quaternion.identity;
     }
 
     protected virtual Vector3 CalculateShakeOffset(float elapsedTime)
